@@ -1,28 +1,257 @@
+/* Stillwater site, 1.1 "Ink and Tide".
+   The river page of an old tide almanac: warm paper, ink, one water color.
+   Places are color bands with a wavy top edge, joined by one river line. */
+
 :root {
-  --paper: #F4F1EC; --surface: #FFFFFF; --ink: #22302F; --muted: #5E6867; --line: #D9D3CA; --accent: #1E7F86;
-  --dawn1: #F7E6DA; --dawn2: #F3D3C4;
   color-scheme: light dark;
+  --paper: #F4EFE6;
+  --ink: #22282C;
+  --faint: #5A6166;
+  --rule: #D6CCBB;
+  --water: #1F6B78;
+  --bw: var(--water);
+
+  --dawn: #F8E8DC;
+  --forest: #E4ECDD;
+  --rain: #E2E7EB;
+  --honey: #F6EBCB;
+  --ocean: #DEECF2;
+  --desert: #F5E6CF;
+  --night: #2E3456;
+
+  --serif: "New York", ui-serif, "Iowan Old Style", Georgia, serif;
+  --sans: system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 }
+
 @media (prefers-color-scheme: dark) {
-  :root { --paper: #0E121A; --surface: #1C2230; --ink: #E8EEF0; --muted: #A3AEB3; --line: #2C3444; --accent: #6FD3D6;
-          --dawn1: #2A2230; --dawn2: #1B1824; }
+  :root {
+    --paper: #14181E;
+    --ink: #ECE6DC;
+    --faint: #A8AEB3;
+    --rule: #2A3038;
+    --water: #71C6D3;
+
+    --dawn: #2A2321;
+    --forest: #212A24;
+    --rain: #212830;
+    --honey: #2B281D;
+    --ocean: #1C2A33;
+    --desert: #2C261E;
+  }
 }
+
 * { box-sizing: border-box; }
-body { margin: 0; background: var(--paper); color: var(--ink);
-  font: 17px/1.6 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif; }
-.hero { padding: 48px 20px 0; text-align: center; background: linear-gradient(var(--dawn1), var(--paper)); }
-.hero img { width: 96px; height: 96px; border-radius: 22px; box-shadow: 0 8px 24px rgba(0,0,0,.12); }
-.hero h1 { font-family: ui-rounded, "SF Pro Rounded", -apple-system, sans-serif; font-weight: 600; font-size: 40px; margin: 16px 0 2px; }
-.hero p { margin: 0; color: var(--muted); }
-nav { max-width: 720px; margin: 24px auto 0; padding: 10px 0; font-size: 15px; border-bottom: 1px solid var(--line); }
-nav a { color: var(--ink); text-decoration: none; margin: 0 12px; }
-nav a:hover, nav a[aria-current="page"] { color: var(--accent); }
-main { max-width: 720px; margin: 0 auto; padding: 24px 20px 64px; }
-h2 { font-family: ui-rounded, "SF Pro Rounded", -apple-system, sans-serif; font-weight: 600; font-size: 28px; margin: 28px 0 8px; }
-h3 { font-family: ui-rounded, "SF Pro Rounded", -apple-system, sans-serif; font-weight: 600; font-size: 20px; margin: 28px 0 4px; }
-a { color: var(--accent); }
-ul, ol { padding-left: 22px; }
-li { margin: 4px 0; }
-.card { background: var(--surface); border: 1px solid var(--line); border-radius: 16px; padding: 18px 22px; margin: 18px 0; }
-.muted { color: var(--muted); font-size: 15px; }
-footer { max-width: 720px; margin: 0 auto; text-align: center; color: var(--muted); font-size: 14px; padding: 20px; border-top: 1px solid var(--line); }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 1.0625rem/1.65 var(--serif);
+  overflow-x: hidden;
+}
+
+/* ---------- bands ---------- */
+
+.band {
+  --b: var(--paper);
+  --bi: var(--ink);
+  --bf: var(--faint);
+  --bw: var(--water);
+  position: relative;
+  background: var(--b);
+  color: var(--bi);
+}
+
+/* The wavy top edge: a strip of the band color, cut by a wave mask. */
+.band::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: -15px;
+  height: 16px;
+  background: var(--b);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 16'%3E%3Cpath d='M0 8Q16 0 32 8T64 8V16H0Z'/%3E%3C/svg%3E") repeat-x 0 0 / 64px 16px;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 16'%3E%3Cpath d='M0 8Q16 0 32 8T64 8V16H0Z'/%3E%3C/svg%3E") repeat-x 0 0 / 64px 16px;
+}
+
+.band .in {
+  position: relative;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 2.75rem 1.25rem 2.5rem 3.75rem;
+}
+
+.dawn    { --b: var(--dawn); }
+.forest  { --b: var(--forest); }
+.rain    { --b: var(--rain); }
+.honey   { --b: var(--honey); }
+.ocean   { --b: var(--ocean); }
+.desert  { --b: var(--desert); }
+.night   { --b: var(--night); --bi: #EEF0FA; --bf: #C9CEEA; --bw: #71C6D3; }
+
+/* ---------- the river ---------- */
+
+.rv {
+  position: absolute;
+  left: 4px;
+  top: -15px;
+  width: 48px;
+  height: calc(100% + 15px);
+  overflow: visible;
+  fill: none;
+  stroke: var(--bw);
+  stroke-width: 3;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.spring {
+  position: absolute;
+  left: 4px;
+  top: 2.4rem;
+  width: 48px;
+  height: 48px;
+}
+.spring .ring { fill: none; stroke: var(--water); stroke-width: 1.5; }
+.spring .disc { fill: var(--water); }
+.spring .eye  { fill: var(--paper); }
+
+.pool {
+  position: absolute;
+  left: 21px;
+  bottom: 1.5rem;
+  width: 14px;
+  height: 14px;
+  border: 3px solid var(--water);
+  border-radius: 50%;
+}
+
+/* ---------- type ---------- */
+
+.label {
+  margin: 0 0 .5rem;
+  font: 600 .75rem/1.4 var(--sans);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--bf);
+}
+
+h1, h2 { font-weight: 400; margin: 0; }
+
+.mark {
+  font-size: 1.05rem;
+  letter-spacing: .32em;
+  text-transform: uppercase;
+  font-weight: 600;
+  margin: 0 0 1.4rem;
+}
+.mark a { color: inherit; text-decoration: none; }
+
+.lede {
+  font-size: clamp(1.45rem, 5.4vw, 2rem);
+  line-height: 1.3;
+  margin: 0 0 1.1rem;
+  max-width: 34rem;
+}
+
+.quiet { margin: 0 0 1.6rem; color: var(--bf); font-style: italic; }
+
+.place h2 { font-size: clamp(1.8rem, 6vw, 2.4rem); line-height: 1.15; }
+.place p.mood { margin: .35rem 0 0; font-style: italic; font-size: 1.15rem; }
+.place .in { padding-top: 2.6rem; padding-bottom: 2.2rem; }
+
+a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--bw, var(--water));
+  text-decoration-thickness: 2px;
+  text-underline-offset: .22em;
+}
+a:hover { text-decoration-thickness: 3px; }
+a:focus-visible {
+  outline: 2px solid var(--bw, var(--water));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+a[aria-current="page"] { text-decoration-thickness: 4px; }
+
+/* ---------- tide table / margin notes ---------- */
+
+.tide { margin: 0; padding: 0; }
+.row { border-top: 1px solid var(--rule); padding: 1.15rem 0 1.2rem; }
+.row > h2, .row > dt, .row > .q {
+  font: italic 400 1.15rem/1.35 var(--serif);
+  margin: 0 0 .4rem;
+}
+.row > dd, .row > .a { margin: 0; }
+.row p { margin: 0 0 .8rem; }
+.row p:last-child { margin-bottom: 0; }
+.row ul { margin: 0 0 .8rem; padding-left: 1.2rem; }
+.row li { margin: .25rem 0; }
+
+@media (min-width: 42rem) {
+  .row {
+    display: grid;
+    grid-template-columns: 11rem minmax(0, 1fr);
+    column-gap: 1.75rem;
+  }
+  .row > h2, .row > dt, .row > .q { margin: 0; }
+}
+
+.title { font-size: clamp(2rem, 7vw, 2.8rem); line-height: 1.12; margin: 0 0 1rem; }
+.intro { margin: 0 0 1.2rem; max-width: 36rem; }
+
+/* ---------- footer ---------- */
+
+.foot::before { display: none; }
+.foot .in { padding-top: 1.4rem; padding-bottom: 2.2rem; }
+.foot .rv { top: 0; height: calc(100% - 1.5rem - 14px); }
+.foot nav { display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; margin: 0 0 1rem; }
+.foot p { margin: 0; font-size: .95rem; color: var(--bf); }
+
+/* ---------- river segments that follow the content ---------- */
+
+/* Each .seg carries its own piece of river; the pieces share end points,
+   so together they read as one line that wanders left and right. */
+:root { --gut: 3.75rem; }
+.seg { position: relative; }
+.seg > .rv { left: calc(4px - var(--gut)); top: 0; height: 100%; }
+.seg.first > .rv { top: -15px; height: calc(100% + 15px); }
+
+.band .in.flow { padding-top: 0; padding-bottom: 0; }
+.flow .head { padding: 2.75rem 0 1.4rem; }
+.flow .head .intro { margin-bottom: 0; }
+.row:last-child { padding-bottom: 2.5rem; }
+
+/* ---------- legal pages: one river on a plain paper page ---------- */
+
+.page {
+  position: relative;
+  max-width: 46rem;
+  margin: 0 auto;
+  padding: 0 1.25rem 0 var(--gut);
+}
+.page .spring { top: 2.1rem; left: calc(4px - var(--gut)); }
+.page .head { padding: 2.4rem 0 1.2rem; }
+.page .head .intro { margin-bottom: 0; }
+.page .head .rv { top: calc(2.1rem + 24px); height: calc(100% - 2.1rem - 24px); }
+.page .label { color: var(--faint); }
+.page .mark { margin-top: 0; padding-top: .55rem; }
+.page .foot { position: relative; border-top: 1px solid var(--rule); padding: 1.3rem 0 2.2rem; }
+.page .foot .rv { top: 0; height: calc(100% - 1.5rem - 14px); left: calc(4px - var(--gut)); }
+.page .foot .pool { left: calc(21px - var(--gut)); }
+.page .foot nav { display: flex; flex-wrap: wrap; gap: .4rem 1.6rem; margin: 0 0 1rem; }
+.page .foot p { color: var(--faint); font-size: .95rem; margin: 0; }
+
+@media (max-width: 26rem) {
+  body { font-size: 1rem; }
+  :root { --gut: 3.5rem; }
+  .band .in { padding-left: 3.5rem; padding-right: 1rem; }
+  .page { padding-right: 1rem; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
